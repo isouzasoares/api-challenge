@@ -1,4 +1,9 @@
-from flask_restful import reqparse, Resource
+from flask import request, jsonify
+from flask_restful import Resource
+from marshmallow import ValidationError
+
+from .models import User
+from .schema import user_schema
 
 
 # Todo
@@ -50,19 +55,56 @@ Users = {
 }
 
 
-# Todo
-class User(Resource):
+class UserView(Resource):
+
     def get(self, user_id):
-        return Users[user_id]
+        try:
+            user = User.get(id=user_id)
+            data = user_schema.dump(user)
+            data = jsonify(data)
+            data.status_code = 200
+        except User.DoesNotExist:
+            data = jsonify({"message": "User could not be found"})
+            data.status_code = 404
+
+        return data
 
     def delete(self, user_id):
-        del Users[user_id]
-        return '', 204
+        q = User.delete().where(User.id == user_id)
+        q.execute()
+        data = jsonify()
+        data.status_code = 204
+        return data
 
     def put(self, user_id):
-        parser = reqparse.RequestParser()
-        parser.add_argument('name')
-        args = parser.parse_args()
-        user = {'name': args['name'], '...': '...'}
-        Users[user_id] = user
-        return user, 200
+        json_input = request.get_json()
+
+        try:
+            user = User.get(id=user_id)
+            data = user_schema.load(json_input)
+            update = user.update(name=data["name"])
+            update.execute()
+            data = jsonify(data)
+            data.status_code = 201
+        except ValidationError as err:
+            data = {'errors': err.messages}
+            data.status_code = 422
+
+        return data
+
+
+class UserAdd(Resource):
+
+    def post(self):
+        json_input = request.get_json()
+
+        try:
+            data = user_schema.load(json_input)
+            User.create(name=data["name"])
+            data = jsonify(data)
+            data.status_code = 201
+        except ValidationError as err:
+            data = {'errors': err.messages}
+            data.status_code = 422
+
+        return data
