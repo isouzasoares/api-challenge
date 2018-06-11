@@ -2,7 +2,7 @@ import unittest
 
 from app import create_app, create_db, create_resources
 from main import create_tables
-from modules.yahooweather.wheather import YahooForecast
+from modules.yahooweather.weather import YahooForecast
 
 
 class ApiTest(unittest.TestCase):
