@@ -8,7 +8,12 @@ def must_not_be_blank(data):
 
 
 class UserSchema(Schema):
+    id = fields.Int(required=False)
     name = fields.Str(required=True)
+    forecast = fields.Nested('ForecastSchema', many=True)
+
+    class Meta:
+        fields = ('id', 'name', 'forecast')
 
 user_schema = UserSchema()
 
@@ -33,12 +38,14 @@ days_schema = DaysSchema()
 
 
 class ForecastSchema(Schema):
-    user_id = fields.Int()
     id = fields.Int(required=False)
+    user_id = fields.Int()
     address = fields.Str(required=True)
     notification = fields.Time(required=True)
-    period = fields.Nested(PeriodSchema, validate=must_not_be_blank)
-    days = fields.Nested(DaysSchema, validate=must_not_be_blank)
+    period = fields.Nested(PeriodSchema, only=['period_from',
+                                               'period_to'],
+                           validate=must_not_be_blank)
+    days = fields.Nested(DaysSchema,
+                         validate=must_not_be_blank)
 
 forecast_schema = ForecastSchema()
-forecastuser_schema = ForecastSchema(many=True)

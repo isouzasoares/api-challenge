@@ -6,59 +6,11 @@ from .models import User
 from .schema import user_schema
 
 
-# Todo
-Users = {
-    '1': {
-        'name': 'Fulano Beltrano',
-        'forecast': [
-            {
-                'address': 'Rua Marshmallow',
-                'period': {
-                    'from': '08:00',
-                    'to': '19:00'
-                },
-                'days': {
-                    'sunday': True,
-                    'monday': True,
-                    'tuesday': True,
-                    'wednesday': True,
-                    'thursday': True,
-                    'friday': False,
-                    'saturday': False
-                },
-                'notification': '07:00'
-            }
-        ]
-    },
-    '2': {
-        'name': 'Ciclano Beltrano',
-        'forecast': [
-            {
-                'address': 'Rua Oreo',
-                'period': {
-                    'from': '22:00',
-                    'to': '06:00'
-                },
-                'days': {
-                    'sunday': True,
-                    'monday': True,
-                    'tuesday': True,
-                    'wednesday': True,
-                    'thursday': True,
-                    'friday': False,
-                    'saturday': False
-                },
-                'notification': '21:00'
-            }
-        ]
-    }
-}
-
-
 class UserView(Resource):
 
     def get(self, user_id):
         try:
+            # TODO FAZER NESTED
             user = User.get(id=user_id)
             data = user_schema.dump(user)
             data = jsonify(data)
@@ -78,6 +30,7 @@ class UserView(Resource):
 
     def put(self, user_id):
         json_input = request.get_json()
+        # TODO FAZER NESTED
 
         try:
             user = User.get(id=user_id)
@@ -97,6 +50,7 @@ class UserAdd(Resource):
 
     def post(self):
         json_input = request.get_json()
+        # TODO FAZER NESTED
 
         try:
             data = user_schema.load(json_input)

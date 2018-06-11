@@ -10,7 +10,7 @@ class User(db.Model):
 
 class Forecast(db.Model):
     id = PrimaryKeyField(null=False)
-    user = ForeignKeyField(User, backref='user')
+    user = ForeignKeyField(User, backref='forecast')
     address = CharField()
     notification = TimeField()
 

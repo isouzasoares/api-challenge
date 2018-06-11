@@ -10,15 +10,13 @@ def create_db(app):
 
 def create_resources(app):
     from src.resources.user import UserView, UserAdd
-    from src.resources.forecast import ForecastAdd, ForecastView
+    from src.resources.forecast import ForecastView
 
     api = Api(app)
     # User
     api.add_resource(UserAdd, '/users')
     api.add_resource(UserView, '/users/<user_id>')
     api.add_resource(ForecastView, '/users/<user_id>/forecast/<forecast_id>')
-
-    api.add_resource(ForecastAdd, '/forecast')
 
 
 def create_app(config_name):
